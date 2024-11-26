@@ -3,6 +3,17 @@ import { Buffer } from "buffer";
 //file descriptor - just a number assigned to an open file. unique to every open file
 
 (async()=>{
+
+    //commands
+    const CREATE_FILE = "create a file"
+    const DELETE_FILE = "delete a file"
+    const UPDATE_FILE = ""
+
+    //functions
+     const createInflate = (path)=> {
+        fs.writeFile(path);
+    }
+
     const commandFileHandler = await fs.open("./command.txt", "r");
 
     commandFileHandler.on("change", async ()=>{
@@ -18,7 +29,11 @@ import { Buffer } from "buffer";
             length,
             position
         )
-        console.log(buff.toString("utf-8"));
+        const command = buff.toString("utf-8");
+        if(command.includes(CREATE_FILE)){
+            const filePath = command.substring(CREATE_FILE + 1);
+            createInflate(filePath);
+        }
 
     });
 
