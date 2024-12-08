@@ -7,7 +7,7 @@ import { Buffer } from "buffer";
     //commands
     const CREATE_FILE = "create a file";
     const DELETE_FILE = "delete the file";
-    const RENAME_FILE = "";
+    const RENAME_FILE = "rename the file";
 
     //functions
      const createFile = async (path)=> {
@@ -36,11 +36,19 @@ import { Buffer } from "buffer";
             }
         }
     }
+
     const renameFile = async (oldPath, newPath)=>{
         try {
-            
-        } catch (error) {
-            
+            await fs.rename(oldPath, newPath);
+            console.log("Renamed successfully");
+        } catch (e) {
+            if(e.code === "ENOENT"){
+                console.log("No file exist at this path, or the destination dir does not exist");
+                //console.log(e);
+            }else{
+                console.log("An error occured");
+                
+            }
         }
     }
 
@@ -74,8 +82,15 @@ import { Buffer } from "buffer";
             deleteFile(filePath);
         }
 
-
-
+        //rename file
+        // rename the file <oldFilePath> to <newFilePath>
+        if(command.includes(RENAME_FILE)){
+            const _idx = command.indexOf(" to ");
+            const oldFilePath = command.substring(RENAME_FILE.length + 1, _idx);
+            const newFilPath = command.substring(_idx + 4);
+            renameFile(oldFilePath, newFilPath);
+            
+        }
 
     });
 

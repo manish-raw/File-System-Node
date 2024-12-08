@@ -1,1 +1,1 @@
-delete the file test.txt
+delete the file my.txt
