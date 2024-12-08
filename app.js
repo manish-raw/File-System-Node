@@ -8,6 +8,7 @@ import { Buffer } from "buffer";
     const CREATE_FILE = "create a file";
     const DELETE_FILE = "delete the file";
     const RENAME_FILE = "rename the file";
+    const ADD_TO_FILE = "add to the file";
 
     //functions
      const createFile = async (path)=> {
@@ -36,7 +37,6 @@ import { Buffer } from "buffer";
             }
         }
     }
-
     const renameFile = async (oldPath, newPath)=>{
         try {
             await fs.rename(oldPath, newPath);
@@ -44,11 +44,25 @@ import { Buffer } from "buffer";
         } catch (e) {
             if(e.code === "ENOENT"){
                 console.log("No file exist at this path, or the destination dir does not exist");
-                //console.log(e);
             }else{
                 console.log("An error occured");
-                
             }
+        }
+    }
+
+    let stopAddingTwice = null; 
+    const addToFile = async (path, content)=> {
+        console.log(content);
+        if(stopAddingTwice === content) return;
+        try {
+            const fileHandle = await fs.open(path, "a");
+            fileHandle.write(content);
+            console.log("Content added successfully!");
+            fileHandle.close();
+            stopAddingTwice = content;
+
+        } catch (error) {
+            console.log("An error occured while adding content");
         }
     }
 
@@ -90,6 +104,15 @@ import { Buffer } from "buffer";
             const newFilPath = command.substring(_idx + 4);
             renameFile(oldFilePath, newFilPath);
             
+        }
+
+        //add to file 
+        // add to the file <path> this content: <content>
+        if(command.includes(ADD_TO_FILE)){
+            const _indx = command.indexOf(" this content: ");
+            const path = command.substring(ADD_TO_FILE.length + 1, _indx);
+            const content = command.substring(_indx + 15);
+            addToFile(path, content);
         }
 
     });
