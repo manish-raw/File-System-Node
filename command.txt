@@ -1,1 +1,1 @@
-create a file test.txt
+delete the file test.txt

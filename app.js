@@ -5,14 +5,46 @@ import { Buffer } from "buffer";
 (async()=>{
 
     //commands
-    const CREATE_FILE = "create a file"
-    const DELETE_FILE = "delete a file"
-    const UPDATE_FILE = ""
+    const CREATE_FILE = "create a file";
+    const DELETE_FILE = "delete the file";
+    const RENAME_FILE = "";
 
     //functions
-     const createInflate = (path)=> {
-        fs.writeFile(path);
+     const createFile = async (path)=> {
+        try{
+			const fileHandler = await fs.open(path, "r");
+			fileHandler.close();
+
+			return console.log(`File ${path} already exits`);
+
+		} catch (e){
+			const newFile = await fs.open(path, "w");
+			newFile.close();
+			return console.log(`File ${path} created successfully`);
+		}
     }
+
+    const deleteFile = async (path)=>{
+        try {
+            await fs.unlink(path);
+            console.log("File deleted successfully!");
+        } catch (e) {
+            if(e.code === "ENOENT"){
+                console.log("No file exist at this path");
+            }else{
+                console.log("An error occured");
+            }
+        }
+    }
+    const renameFile = async (oldPath, newPath)=>{
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
+
 
     const commandFileHandler = await fs.open("./command.txt", "r");
 
@@ -28,12 +60,22 @@ import { Buffer } from "buffer";
             offset,
             length,
             position
-        )
+        );
         const command = buff.toString("utf-8");
+
         if(command.includes(CREATE_FILE)){
-            const filePath = command.substring(CREATE_FILE + 1);
-            createInflate(filePath);
+            const filePath = command.substring(CREATE_FILE.length + 1);
+            createFile(filePath);
         }
+
+        // delete file
+        if(command.includes(DELETE_FILE)){
+            const filePath = command.substring(DELETE_FILE.length + 1);
+            deleteFile(filePath);
+        }
+
+
+
 
     });
 
